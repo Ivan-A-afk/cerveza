@@ -1,0 +1,5 @@
+dispatch:
+  - url: "http://localhost:4200/#/products"
+    service: default
+  - url: "http://localhost:4200/#/products"
+    service: backend

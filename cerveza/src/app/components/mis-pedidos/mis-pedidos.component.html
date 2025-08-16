@@ -1,0 +1,20 @@
+<div class="h-full p-4">
+    <p-card header="Pedidos realizados">
+        <p-table [value]="misPedidos">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Pagado</th>
+                    <th>Total pedido</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-pedido>
+                <tr>
+                    <td>{{pedido.fecha_pedido | date:'medium'}}</td>
+                    <td>${{pedido.total_pedido  ? pedido.total_pedido : '0'  | number}}</td>
+                    <td>{{pedido.pagado ? 'Pagado' : 'No pagado'}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+</div>

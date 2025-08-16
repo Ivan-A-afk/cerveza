@@ -1,0 +1,218 @@
+<div class="h-full w-full flex justify-content-center align-items-center py-5">
+  <p-card>
+    <div class="w-full grid justify-content-center align-items-center">
+      <div class="col-9">
+        <div class="p-fluid">
+          <form [formGroup]="form" class="p-field" (ngSubmit)="onLogin()">
+            <div class="text-center text-900 text-xl">
+              <h2>ALBATROS</h2>
+            </div>
+            <div class="grid justify-content-between">
+              <div class="col-12 field">
+                <label for="correo" class="block">Usuario</label>
+                <input
+                  pInputText
+                  type="text"
+                  name="user_name"
+                  placeholder="Usuario"
+                  formControlName="userName"
+                  required
+                  minlength="4"
+                />
+              </div>
+              <div class="col-12 field">
+                <label for="password" class="block">Contraseña</label>
+                <input
+                  pInputText
+                  type="password"
+                  name="user_name"
+                  placeholder="Contraseña"
+                  formControlName="password"
+                  required
+                />
+              </div>
+              <div class="col-12">
+                <p-button
+                  label="Iniciar Sesión"
+                  type="submit"
+                  class="p-jc-center flex w-full justify-content-center"
+                  value="Send"
+                ></p-button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <p-divider styleClass="w-full|"> </p-divider>
+        <div
+          class="col-12 p-d-flex p-ai-center p-jc-center flex w-full justify-content-center"
+        >
+          <p-button
+            label="Registrate"
+            icon="pi pi-user-plus"
+            styleClass="p-button-success"
+            (click)="showModalDialog()"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+<p-dialog
+  header="Registrar"
+
+  styleClass="w-4"
+  [baseZIndex]="10000"
+  [(visible)]="displayModal"
+>
+<div class="flex justify-content-center w-full p-0">
+  <form class="w-full px-2 py-2"  [formGroup]="formRegister" (ngSubmit)="saved()">
+    <div class="grid flex w-full justify-content-center">
+      <div class="col-12 form-group">
+        <label for="usuario" minlength="4">Usuario</label>
+        <div class="p-inputgroup" >
+          <input type="text"  placeholder="Usuario"  pInputText required formControlName="usuario" />
+        </div>
+      </div>
+      <div class="col-12 form-group">
+        <label for="contraseña">Contraseña</label>
+        <div class="p-inputgroup" >
+          <input
+            type="password"
+            pInputText
+            placeholder="Contraseña"
+            required
+            formControlName="contrasena"
+          />
+        </div>
+      </div>
+      <div class="col-12 form-group">
+        <label for="nombre">Nombre</label>
+        <div class="p-col-12 p-md-4" >
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Ivan"
+              required
+              formControlName="nombre"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-12 form-group">
+        <label for="apellido">Apellido</label>
+        <div class="p-col-12 p-md-4" >
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Amaya"
+              required
+              formControlName="apellido"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-12 form-group">
+        <label for="correo">Correo</label>
+        <div class="p-col-12 p-md-4" >
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="ejemplo@gmail.com"
+              required
+              formControlName="correo"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-12 form-group">
+        <label for="telefono">Telefono</label>
+        <div class="p-col-12 p-md-4" >
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="912345678"
+              required
+              formControlName="telefono"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-12 form-group">
+        <label for="direccion">Direccion</label>
+        <div class="p-col-12 p-md-4" >
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Parque las clamidias 01234, San joaquin"
+              required
+              formControlName="direccion"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-12 form-group">
+        <label for="eada">Fecha de nacimiento</label>
+        <div class="p-col-12 p-md-4" >
+          <div class="p-inputgroup">
+            <p-calendar styleClass="w-full" formControlName="edad"></p-calendar>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="w-full flex justify-content-center">
+      <p-button
+        type="submit"
+        class="btn btn-primary"
+      >
+        Registrar
+      </p-button>  
+      
+    </div>
+   
+
+  </form>
+</div>
+</p-dialog>
+
+
+
+<p-dialog
+  
+  [closable]="false"
+  styleClass="w-4"
+  [(visible)]="displayAgeCheck"
+  [modal]="true"
+>
+
+<div *ngIf="!isNotOlder; else notOlder" class="grid w-full h-full flex justify-content-center">
+  <div class="col-12 flex justify-content-center">
+    <h3>Bienvenido a </h3>
+  </div>
+  <div class="col-12 flex justify-content-center">
+    <img style="width: 250px;height: 250px;" src="../../../assets/albatros_principal.png">
+  </div>
+  <div class="col-12 flex justify-content-center">
+    <h3>¿Eres de mayor de 18 años?</h3>
+  </div>
+  <div class="col-12 flex w-3 justify-content-between">
+    <button pButton type="button" label="NO"  (click)="isNotOlder = true"></button>
+    <button pButton type="button" label="SI" (click)="displayAgeCheck = false"></button>
+  </div>
+  
+</div>
+
+</p-dialog>
+
+
+<ng-template #notOlder>
+  <div class="flex justify-content-center">
+    <span>¡Lo sentimos no puedes ingresar a la pagina por ser menor a 18 años!</span>
+  </div>
+</ng-template>

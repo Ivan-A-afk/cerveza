@@ -1,0 +1,42 @@
+
+   <div class="flex text-lg font-semibold justify-content-between align-items-center h-6rem bg-yellow-600 text-white px-2 select-none">
+      <div class="flex justify-content-center gap-3 align-items-center">
+        <div>
+          <a href="#" routerLink="/products"><img
+            src="../../../assets/albatros_logo.png"
+            width="80"
+            height="80"
+          /></a>
+        </div>
+        <div class="uppercase font-bold">
+          <h2>Albatros</h2>
+        </div>
+        <a class="flex justify-content-center gap-2 no-underline text-white"  routerLink="/information">Información</a>
+      </div>
+
+      <div class="flex gap-3 text-white justify-content-center align-items-center">
+        <div *ngIf="!userLogged; else user" >
+          <a class="flex justify-content-center gap-2 no-underline text-white" [routerLink]="['/login']">
+            <i class="pi pi-user"></i> Iniciar sesión
+          </a>
+        </div>
+        <div *ngIf="!adminMode">
+          <a class="flex justify-content-center gap-2 no-underline text-white" (click)="handleCart()">
+            <i class="pi pi-shopping-cart" ></i>
+                Carrito
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+
+<ng-template #user>
+  <div class="cursor-pointer">
+      <span (click)="menu.toggle($event)">{{userName}}</span>
+      <p-slideMenu #menu [model]="items" [popup]="true" [viewportHeight]="250"></p-slideMenu>
+  </div>
+</ng-template>
+
+
+<app-cart (cartClosed)="handleClose($event)" [visible]="showCart"></app-cart>

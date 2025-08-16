@@ -1,0 +1,93 @@
+<div class="h-full p-4">
+    <button pButton pRipple type="button"icon="pi pi-plus" label="Nuevo producto" class="p-button-rounded p-button-text p-button-success" (click)="showDialogAdd()"></button>
+    <p-card header="Productos en el inventario">
+    <p-table [value]="products" [paginator]="true" [rows]="5" [showCurrentPageReport]="true" responsiveLayout="scroll"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos" [rowsPerPageOptions]="[5,10,25]">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>id</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Descripción</th>
+                <th>URL imagen</th>
+                <th>Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-prod>
+            <tr>
+                <td>{{prod.id_producto}}</td>
+                <td>{{prod.nombre_producto}}</td>
+                <td>${{prod.precio_producto | number}}</td>
+                <td>{{prod.stock}}</td>
+                <td>{{prod.descripcion_producto}}</td>
+                <td><img style="width: 25px; height: 25px;" src="{{prod.img_url}}"></td>
+                <td>
+                    <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" (click)="handleRemove(prod)"></button>
+                    <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning" (click)="handleEdit(prod)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    </p-card>
+</div>
+
+
+<p-dialog styleClass="w-5 flex justify-content-center" header="Editando producto {{productoSeleccionado ?  productoSeleccionado.nombre_producto : ''}}" [(visible)]="displayEdit">
+    <div class="grid flex justify-content-center">
+        <form  [formGroup]="editarProducto">
+                <div class="field col-12">
+                    <label  class="block" for="nombreProducto">Nombre producto</label>
+                    <input  id="nombreProducto" formControlName="nombreProducto" type="text" pInputText />
+                </div>
+                <div class="field col-12">
+                    <label class="block" for="precioProducto">Precio producto</label>
+                    <input id="precioProducto" formControlName="precioProducto" type="text" pInputText />
+                </div>
+                <div class="field col-12">
+                    <label class="block" for="stockProducto">Stock producto</label>
+                    <input id="stockProduco "formControlName="stockProducto" type="text" pInputText />
+                </div> 
+                <div class="field col-12">
+                    <label class="block" for="urlImagenProducto">Url imagen producto</label>
+                    <input id="urlImagenProducto" formControlName="urlImagenProducto" type="text" pInputText />
+                </div>
+                <div class="field col-12">
+                    <label class="block" for="descripcionProducto">Descripcion producto</label>
+                    <textarea id="descripcionProducto" formControlName= "descripcionProducto" [rows]="5" [cols]="30" pInputTextarea [autoResize]="false"></textarea>
+                </div>
+                <div class="block flex justify-content-center">
+                    <button pButton pRipple type="button" label="Guardar cambios" class="p-button-raised p-button-success" (click)="guardarCambios()"></button>
+                </div>
+            </form>
+        </div>
+</p-dialog>
+<p-dialog [(visible)]="displayAdd"  styleClass="w-5 flex justify-content-center">
+    <div class="grid flex justify-content-center">
+        <form  [formGroup]="formAddProduct" (ngSubmit)="agregarProducto()">
+                <div class="field col-12">
+                    <label  class="block" for="nombreProducto">Nombre producto</label>
+                    <input  id="nombreProducto" formControlName="nombreProductoNuevo" type="text" pInputText />
+                </div>
+                <div class="field col-12">
+                    <label class="block" for="precioProducto">Precio producto</label>
+                    <input id="precioProducto" formControlName="precioProductoNuevo" type="text" pInputText />
+                </div>
+                <div class="field col-12">
+                    <label class="block" for="stockProducto">Stock producto</label>
+                    <input id="stockProduco "formControlName="stockProductoNuevo" type="text" pInputText />
+                </div> 
+                <div class="field col-12">
+                    <label class="block" for="urlImagenProducto">Url imagen producto</label>
+                    <input id="urlImagenProducto" formControlName="urlImagenProductoNuevo" type="text" pInputText />
+                </div>
+                <div class="field col-12">
+                    <label class="block" for="descripcionProducto">Descripcion producto</label>
+                    <textarea id="descripcionProducto" formControlName= "descripcionProductoNuevo" [rows]="5" [cols]="30" pInputTextarea [autoResize]="false"></textarea>
+                </div>
+                <div class="block flex justify-content-center">
+                    <button pButton pRipple type="submit" label="Guardar cambios" class="p-button-raised p-button-success" ></button>
+                </div>
+            </form>
+        </div>
+</p-dialog>

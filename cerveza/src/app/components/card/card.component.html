@@ -1,0 +1,100 @@
+<div class="col-4">
+  <p-card
+    header="Cerveza Artesanal"
+    [style]="{ width: '25rem' }"
+    class="col-sm-4"
+  >
+    <p>
+      <img src="{{ item.img_url }}" width="100" height="100" />
+    </p>
+    <h5>
+      {{ item.nombre_producto }}
+    </h5>
+    <h5>${{ item.precio_producto }}</h5>
+    <h5>Stock: {{item.stock}}</h5>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Agregar al carrito"
+        icon="pi pi-plus"
+        (click)="showModalDialog(item)"
+      ></p-button>
+
+
+      <p-button
+        label="Ver producto"
+        icon="pi pi-eye"
+        styleClass="p-button-secondary"
+        [style]="{ 'margin-left': '.10em' }"
+        (click)="showModalDialogView()"
+      ></p-button>
+    </ng-template>
+  </p-card>
+</div>
+
+<p-dialog
+  [(visible)]="displayModalView"
+  [breakpoints]="{ '500px': '75vw' }"
+  [style]="{ width: '30%' }"
+  [draggable]="false"
+  [resizable]="false"
+  [baseZIndex]="10000"
+>
+  <div>
+    <p>
+      <img src="{{ item.img_url }}" width="100" height="100" />
+    </p>
+    <h5>
+      <h4>Nombre del producto</h4>
+      <p>{{ item.nombre_producto }}</p>
+    </h5>
+    <h5>
+      <h4>Descripción</h4>
+      <p>{{ item.descripcion_producto }}</p>
+    </h5>
+    <h5>
+      <h4>Precio</h4>
+      <p>$ {{ item.precio_producto }} c/u</p>
+    </h5>
+    <ng-template pTemplate="footer">
+      <p-button
+        icon="pi pi-plus"
+        (click)="showModalDialog(item)"
+        label="Agregar"
+        styleClass="p-button-text"
+      >
+        holaa</p-button
+      >
+    </ng-template>
+  </div>
+</p-dialog>
+
+<p-dialog
+*ngIf="selectedProduct"
+[(visible)]="displayModal"
+[breakpoints]="{ '960px': '75vw' }"
+[style]="{ width: 'auto' }"
+[draggable]="false"
+[resizable]="false"
+[baseZIndex]="10000"
+[dismissableMask]="true"
+(onHide)="cant=1"
+>
+<h3>Ingrese la cantidad de productos que desea agregar de</h3>
+<h3>{{ item.nombre_producto }}</h3>
+<p-inputNumber
+  [(ngModel)]="cant"
+  [showButtons]="true"
+  [min]="1"
+  [max]="selectedProduct.stock"
+  id="producto"
+></p-inputNumber>
+<ng-template pTemplate="footer">
+  <p-button
+    icon="pi pi-plus"
+    (click)="addProduct()"
+    label="Agregar"
+    styleClass="p-button-text"
+  ></p-button>
+</ng-template>
+</p-dialog>

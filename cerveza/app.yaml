@@ -1,0 +1,28 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+service: default
+
+skip_files:
+- ^(?!dist) 
+
+handlers:
+  - url: /
+    secure: always
+    static_files: dist/cerveza/index.html
+    upload: dist/cerveza/index.html
+
+  #  Routing rules for resources, css, js, images etc. Any file with format filename.ext
+  - url: /(..(.+))$
+    secure: always
+    static_files: dist/cerveza/\1
+    upload: dist/cerveza/(..(.+))$
+
+  #  Routing rule for Angular Routing
+  - url: /(.*\.(gif|png|jpg|css|js)(|\.map))$
+    static_files: dist/cerveza/\1
+    upload: dist/cerveza/(.*)(|\.map)
+
+  - url: /(.*)
+    static_files: dist/cerveza/index.html
+    upload: dist/cerveza/index.html

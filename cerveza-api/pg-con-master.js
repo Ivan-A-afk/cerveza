@@ -1,16 +1,22 @@
 const pgp = require("pg-promise")();
 
-const connection = process.env.DATABASE_URL || {
-  host: "localhost",
-  port: 5432,
-  database: "postgres",
-  user: "postgres",
-  password: "admin",
-};
+let connection;
 
-// Si es Render, habilitamos SSL
 if (process.env.DATABASE_URL) {
-  connection.ssl = { rejectUnauthorized: false }; // importante
+  // Conexión a Render con SSL
+  connection = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  };
+} else {
+  // Conexión local
+  connection = {
+    host: "localhost",
+    port: 5432,
+    database: "postgres",
+    user: "postgres",
+    password: "admin"
+  };
 }
 
 const db = pgp(connection);

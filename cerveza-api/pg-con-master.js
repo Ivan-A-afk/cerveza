@@ -1,15 +1,8 @@
 const pgp = require("pg-promise")();
+require("dotenv").config();
 
-let cn;
+const connection = process.env.DATABASE_URL;
 
-cn = {
-  host: "localhost",
-  port: 5432,
-  database: "postgres",
-  user: "postgres",
-  password: "admin",
-};
+const db = pgp(connection);
 
-// console.log(cn)
-const db = pgp(cn);
 module.exports = db;

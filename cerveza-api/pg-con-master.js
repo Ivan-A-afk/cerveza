@@ -1,28 +1,24 @@
-const express = require("express");
-const db = require("./pg-con-master");
+const pgp = require("pg-promise")();
 
-const app = express();
-const PORT = process.env.PORT || 8081;
+let connection;
 
-// Ruta de prueba: servidor online
-app.get("/", (req, res) => {
-  res.send("✅ Servidor funcionando en Render con PostgreSQL");
-});
+if (process.env.DATABASE_URL) {
+  connection = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  };
+} else {
+  connection = {
+    host: "localhost",
+    port: 5432,
+    database: "postgres",
+    user: "postgres",
+    password: "admin"
+  };
+}
 
-// Ruta de prueba: conexión DB
-app.get("/db-test", async (req, res) => {
-  try {
-    // Aquí probamos la conexión ejecutando una consulta simple
-    const result = await db.one("SELECT version() AS version");
-    console.log("✅ Conectado a la base de datos, versión:", result.version);
-    res.send("✅ Conectado a la base de datos, versión: " + result.version);
-  } catch (error) {
-    console.error("❌ Error conectando a la DB:", error.message);
-    res.status(500).send("❌ Error conectando a la DB: " + error.message);
-  }
-});
+const db = pgp(connection);
 
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-});
+console.log("✅ pg-promise listo para usar con SSL");
+
+module.exports = db;

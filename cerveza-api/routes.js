@@ -43,11 +43,11 @@ mercadopago.configure({
 router.post("/payment", async (req, res) => {
   let preference = {
     items: [],
-    back_urls: {
-      success: "localhost:8081/api/feedback",
-      failure: "localhost:8081/api/feedback",
-      pending: "localhost:8081/api/feedback",
-    },
+    // back_urls: {
+    //   success: "localhost:8081/api/feedback",
+    //   failure: "localhost:8081/api/feedback",
+    //   pending: "localhost:8081/api/feedback",
+    // },
     
       
     // back_urls: {
@@ -55,6 +55,11 @@ router.post("/payment", async (req, res) => {
     //   failure: "https://backend-dot-cerveza-365502.uc.r.appspot.com/api/feedback",
     //   pending: "https://backend-dot-cerveza-365502.uc.r.appspot.com/api/feedback",
     // },
+    back_urls: {
+  success: "https://cerveza-a4hb.onrender.com/api/feedback",
+  failure: "https://cerveza-a4hb.onrender.com/api/feedback",
+  pending: "https://cerveza-a4hb.onrender.com/api/feedback",
+}
   };
   console.log(preference);
 
@@ -122,7 +127,8 @@ router.get("/feedback", async (req, res) => {
   //   });
 
   // res.redirect("https://cerveza-365502.uc.r.appspot.com/#/mis-pedidos");
-     res.redirect("http://localhost:4200/#/mis-pedidos");
+    //  res.redirect("http://localhost:4200/#/mis-pedidos");
+     res.redirect("https://proyecto-tesis-9e33d.web.app/#/mis-pedidos");
 });
 
 router.put("/deshabilitar-cerveza", async (req, res) => {

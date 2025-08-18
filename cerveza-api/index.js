@@ -19,7 +19,7 @@ const db = require("./pg-con-master");
 app.use(cors({
   origin: [
     'http://localhost:4200', // 🔹 tu front en local
-    'https://proyecto-tesis-9e33d.web.app' // 🔹 tu front en Firebase
+    'https://tesis-8c265.web.app' // 🔹 tu front en Firebase
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']

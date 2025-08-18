@@ -17,8 +17,14 @@ const db = require("./pg-con-master");
 
 // Middlewares
 app.use(cors({
-  origin: ['https://proyecto-tesis-9e33d.web.app'] // tu frontend en Firebase
+  origin: [
+    'http://localhost:4200', // 🔹 tu front en local
+    'https://proyecto-tesis-9e33d.web.app' // 🔹 tu front en Firebase
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 
 // Ruta raíz

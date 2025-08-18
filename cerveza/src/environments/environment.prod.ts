@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  serverApi:"https://backend-dot-cerveza-365502.uc.r.appspot.com/api/",
+  serverApi: "https://cerveza-a4hb.onrender.com/api/",
 };

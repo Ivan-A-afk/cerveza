@@ -1,5 +1,4 @@
 export const environment = {
-  production: false,
-  serverApi:"http://localhost:8081/api/",
+  production: true,
+  serverApi: "https://cerveza-a4hb.onrender.com/api/",
 };
-

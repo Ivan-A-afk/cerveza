@@ -127,8 +127,8 @@ router.get("/feedback", async (req, res) => {
   //   });
 
   // res.redirect("https://cerveza-365502.uc.r.appspot.com/#/mis-pedidos");
-    //  res.redirect("http://localhost:4200/#/mis-pedidos");
-     res.redirect("https://proyecto-tesis-9e33d.web.app/#/mis-pedidos");
+     res.redirect("http://localhost:4200/#/mis-pedidos");
+    //  res.redirect("https://proyecto-tesis-9e33d.web.app/#/mis-pedidos");
 });
 
 router.put("/deshabilitar-cerveza", async (req, res) => {

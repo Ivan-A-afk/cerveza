@@ -2,10 +2,10 @@ const nodemailer = require('nodemailer');
 
 // Configuración del transporte (ejemplo con Gmail)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: 'outlook',
   auth: {
-    user: 'bellaamayacontreras@gmail.com',
-    pass: 'Styles11'
+    user: 'iang2538@hotmail.com',
+    pass: 'yertznobato30'
   }
 });
 

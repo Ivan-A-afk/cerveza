@@ -20,7 +20,7 @@ router.post("/login", async (req, res) => {
     req.body.userName
   );
   //SI EL USUARIO NO EXISTE ENVIAR UN ERROR
-  if (!userExists.length) return res.send({error: true});
+  if (!userExists.length) return res.send({ error: true });
 
   const passEqual = await db.any(
     "SELECT user_name FROM public.user u WHERE u.user_name = $1 AND u.password = $2 AND active is true",
@@ -29,17 +29,17 @@ router.post("/login", async (req, res) => {
 
   //CHECKEAR SI LA CONTRASEÑA INGRESADA ES LA MISMA QUE LA DE LA BASE DE DATOS
   if (!passEqual.length) return res.send({ error: true, msg: "credenciales erroneas" });;
-  
+
 
   const token = jwt.sign(userExists[0], "CERVEZA2022", { expiresIn: 60 * 60 });
   res.send({ error: false, token: token });
 });
 
 mercadopago.configure({
-    access_token:
-      "APP_USR-6226984411825808-081515-914a6e97918b1ac4ef798175cd3510b6-2631791252",
-  });
-  
+  access_token:
+    "APP_USR-6226984411825808-081515-914a6e97918b1ac4ef798175cd3510b6-2631791252",
+});
+
 
 router.post("/payment", async (req, res) => {
   let preference = {
@@ -49,18 +49,18 @@ router.post("/payment", async (req, res) => {
     //   failure: "localhost:8081/api/feedback",
     //   pending: "localhost:8081/api/feedback",
     // },
-    
-      
+
+
     // back_urls: {
     //   success: "https://backend-dot-cerveza-365502.uc.r.appspot.com/api/feedback",
     //   failure: "https://backend-dot-cerveza-365502.uc.r.appspot.com/api/feedback",
     //   pending: "https://backend-dot-cerveza-365502.uc.r.appspot.com/api/feedback",
     // },
     back_urls: {
-  success: "https://cerveza-a4hb.onrender.com/api/feedback",
-  failure: "https://cerveza-a4hb.onrender.com/api/feedback",
-  pending: "https://cerveza-a4hb.onrender.com/api/feedback",
-}
+      success: "https://cerveza-a4hb.onrender.com/api/feedback",
+      failure: "https://cerveza-a4hb.onrender.com/api/feedback",
+      pending: "https://cerveza-a4hb.onrender.com/api/feedback",
+    }
   };
   console.log(preference);
 
@@ -112,11 +112,11 @@ router.get("/feedback", async (req, res) => {
 
   // IF(ORDEN IS NOT PAGADA) RETURN;
 
-  
+
   //ACTUALIZAR STOCK SEGUN LA ORDEN QUE HA SIDO PAGADA
   //HACEMOS UN SELECT BUSCANDO LA ORDEN (USANDO req.query.preference_id) Y SACAMOS EL ID
-  
-  
+
+
   //CON EL SELECT OBTENEMOS EL ID_ORDER Y BUSCAMOS TODOS LOS DETALLES QUE ESTEN ASOCIADOS A ESA ORDEN
 
   //CON LAS CANTIDADES DE LOS PRODUCTOS RESTAMOS STOCK HACIENDO UN UPDATE AL STOCK SEGUN SU ID
@@ -128,8 +128,8 @@ router.get("/feedback", async (req, res) => {
   //   });
 
   // res.redirect("https://cerveza-365502.uc.r.appspot.com/#/mis-pedidos");
-    //  res.redirect("http://localhost:4200/#/mis-pedidos");
-     res.redirect("https://tesis-8c265.web.app/#/mis-pedidos");
+  //  res.redirect("http://localhost:4200/#/mis-pedidos");
+  res.redirect("https://tesis-8c265.web.app/#/mis-pedidos");
 });
 
 router.put("/deshabilitar-cerveza", async (req, res) => {
@@ -186,6 +186,7 @@ router.post("/registrar-cliente", async (req, res) => {
       return res.status(400).json({ error: true, msg: "Faltan campos obligatorios" });
     }
 
+    // Verificar si usuario existe
     const userExists = await db.any(
       "SELECT true FROM public.user WHERE user_name = $1",
       [usuario]
@@ -195,13 +196,15 @@ router.post("/registrar-cliente", async (req, res) => {
       return res.status(409).json({ error: true, msg: "Usuario ya existe" });
     }
 
+    // Insertar usuario principal
     const insertRegister = await db.any(
       "INSERT INTO public.user(user_name, password, email) VALUES ($1, $2, $3) RETURNING user_id",
       [usuario, contrasena, correo]
     );
 
+    // Insertar datos adicionales
     await db.any(
-      "INSERT INTO public.user_data(id_user,name,last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      "INSERT INTO public.user_data(id_user, name, last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         insertRegister[0].user_id,
         usuario,
@@ -213,17 +216,20 @@ router.post("/registrar-cliente", async (req, res) => {
       ]
     );
 
-    // Enviar correo de bienvenida
-    enviarCorreoBienvenida(correo, usuario)
-      .then(() => console.log("Correo enviado a:", correo))
-      .catch(err => console.error("Error enviando correo:", err));
+    // 👉 Respuesta inmediata al cliente
+    res.status(201).json({ error: false, msg: "Usuario creado" });
 
-    return res.status(201).json({ error: false, msg: "Usuario creado" });
+    // 👉 Enviar correo en segundo plano
+    enviarCorreoBienvenida(correo, usuario)
+      .then(() => console.log("📧 Correo enviado a:", correo))
+      .catch(err => console.error("❌ Error enviando correo:", err));
+
   } catch (error) {
     console.error("Error en /registrar-cliente:", error);
     return res.status(500).json({ error: true, msg: "Error interno del servidor" });
   }
 });
+
 
 
 
@@ -239,10 +245,10 @@ router.post("/agregar-cerveza", async (req, res) => {
     ]
   );
 
-  res.send({ error: false, msg: 'producto creado', id:  addProduct[0].id_producto});
+  res.send({ error: false, msg: 'producto creado', id: addProduct[0].id_producto });
 });
 
-router.get("/listar-todos",async (req, res) => {
+router.get("/listar-todos", async (req, res) => {
   db.any(
     "SELECT * FROM cervezas WHERE active_producto ORDER BY id_producto ASC"
   ).then((resp) => {

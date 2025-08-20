@@ -178,57 +178,43 @@ router.get("/detalle-pedidos/:id", async (req, res) => {
 
 const { enviarCorreoBienvenida } = require("./mail.service");
 
-router.post("/registrar-cliente", async (req, res) => {
+// Endpoint para registrar cliente
+router.post('/registrar-cliente', async (req, res) => {
+  const { nombre, email, password } = req.body;
+
+  // Validar campos
+  if (!nombre || !email || !password) {
+    return res.status(400).json({ error: true, msg: 'Faltan campos obligatorios' });
+  }
+
   try {
-    const { usuario, contrasena, correo, apellido, edad, direccion, telefono } = req.body;
-
-    if (!usuario || !contrasena || !correo) {
-      return res.status(400).json({ error: true, msg: "Faltan campos obligatorios" });
+    // 1️⃣ Verificar si el email ya existe
+    const existe = await db.oneOrNone('SELECT id FROM clientes WHERE email = $1', [email]);
+    if (existe) {
+      return res.status(400).json({ error: true, msg: 'El correo ya está registrado' });
     }
 
-    // Verificar si usuario existe
-    const userExists = await db.any(
-      "SELECT true FROM public.user WHERE user_name = $1",
-      [usuario]
+    // 2️⃣ Insertar el nuevo usuario
+    const nuevoUsuario = await db.one(
+      'INSERT INTO clientes(nombre, email, password) VALUES($1, $2, $3) RETURNING id, nombre, email',
+      [nombre, email, password]
     );
 
-    if (userExists.length) {
-      return res.status(409).json({ error: true, msg: "Usuario ya existe" });
+    // 3️⃣ Enviar correo de bienvenida
+    try {
+      await enviarCorreoBienvenida(email, nombre);
+    } catch (err) {
+      console.error('❌ Error al enviar correo:', err.message);
     }
 
-    // Insertar usuario principal
-    const insertRegister = await db.any(
-      "INSERT INTO public.user(user_name, password, email) VALUES ($1, $2, $3) RETURNING user_id",
-      [usuario, contrasena, correo]
-    );
-
-    // Insertar datos adicionales
-    await db.any(
-      "INSERT INTO public.user_data(id_user,name,last_name,birthday,address,phone,email) VALUES ($1,$2,$3,$4,$5,$6,$7)",
-      [
-        insertRegister[0].user_id,
-        usuario,
-        apellido || "",
-        edad ? new Date(edad) : null, // Convertir a fecha
-        direccion || "",
-        telefono || "",
-        correo,
-      ]
-    );
-
-    // 👉 Respuesta inmediata al cliente
-    res.status(201).json({ error: false, msg: "Usuario creado" });
-
-    // 👉 Enviar correo en segundo plano
-    enviarCorreoBienvenida(correo, usuario)
-      .then(() => console.log("📧 Correo enviado a:", correo))
-      .catch(err => console.error("❌ Error enviando correo:", err));
-
-  } catch (error) {
-    console.error("Error en /registrar-cliente:", error);
-    return res.status(500).json({ error: true, msg: "Error interno del servidor" });
+    // 4️⃣ Responder
+    res.json({ error: false, msg: 'Usuario creado con éxito', usuario: nuevoUsuario });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: true, msg: 'Error interno del servidor' });
   }
 });
+
 
 
 

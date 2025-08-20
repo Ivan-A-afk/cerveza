@@ -204,12 +204,12 @@ router.post("/registrar-cliente", async (req, res) => {
 
     // Insertar datos adicionales
     await db.any(
-      "INSERT INTO public.user_data(id_user, name, last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      "INSERT INTO public.user_data(id_user,name,last_name,birthday,address,phone,email) VALUES ($1,$2,$3,$4,$5,$6,$7)",
       [
         insertRegister[0].user_id,
         usuario,
         apellido || "",
-        edad || null,
+        edad ? new Date(edad) : null, // Convertir a fecha
         direccion || "",
         telefono || "",
         correo,

@@ -190,7 +190,7 @@ router.post('/registrar-cliente', async (req, res) => {
 
   try {
     // 1️⃣ Verificar si el email ya existe
-    const existe = await db.oneOrNone('SELECT id FROM clientes WHERE email = $1', [email]);
+    const existe = await db.oneOrNone('SELECT id FROM user_data WHERE email = $1', [email]);
     if (existe) {
       return res.status(400).json({ error: true, msg: 'El correo ya está registrado' });
     }
@@ -207,7 +207,7 @@ router.post('/registrar-cliente', async (req, res) => {
 
     // 3️⃣ Insertar el nuevo usuario
     const nuevoUsuario = await db.one(
-      `INSERT INTO clientes(nombre, apellido, email, password, telefono, direccion, edad)
+      `INSERT INTO user_data(nombre, apellido, email, password, telefono, direccion, edad)
        VALUES($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, nombre, apellido, email`,
       [nombre, apellido, email, password, telefono, direccion, edadBD]

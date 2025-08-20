@@ -4,7 +4,7 @@ const db = require("./pg-con-master");
 const jwt = require("jsonwebtoken");
 const mercadopago = require("mercadopago");
 const { preferences } = require("mercadopago");
-const { enviarCorreoBienvenida } = require("./mail.service");
+
 
 router.get("/products", (req, res) => {
   db.any(

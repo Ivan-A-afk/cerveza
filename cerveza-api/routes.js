@@ -179,54 +179,63 @@ router.get("/detalle-pedidos/:id", async (req, res) => {
 const { enviarCorreoBienvenida } = require("./mail.service");
 
 // Endpoint para registrar cliente
-// Endpoint para registrar cliente
 router.post('/registrar-cliente', async (req, res) => {
-  const { nombre, apellido, email, password, telefono, direccion, edad } = req.body;
+  const { usuario, contrasena, nombre, apellido, correo, telefono, direccion, edad } = req.body;
 
-  // Validar campos obligatorios
-  if (!nombre || !apellido || !email || !password || !telefono || !direccion) {
+  // 1️⃣ Validar campos obligatorios
+  if (!usuario || !contrasena || !nombre || !apellido || !correo || !telefono || !direccion) {
     return res.status(400).json({ error: true, msg: 'Faltan campos obligatorios' });
   }
 
   try {
-    // 1️⃣ Verificar si el email ya existe
-    const existe = await db.oneOrNone('SELECT id_user FROM user_data WHERE email = $1', [email]);
-    if (existe) {
-      return res.status(400).json({ error: true, msg: 'El correo ya está registrado' });
+    // 2️⃣ Verificar si el usuario ya existe
+    const userExists = await db.any(`SELECT true FROM public.user WHERE user_name = $1`, [usuario]);
+    if (userExists.length) {
+      return res.status(400).json({ error: true, msg: 'El usuario ya existe' });
     }
 
-    // 2️⃣ Preparar edad para la base de datos (si es fecha)
-    let edadBD = null;
-    if (edad) {
-      // Si es Date, convertir a formato YYYY-MM-DD
-      if (typeof edad === 'string' || edad instanceof Date) {
-        const d = new Date(edad);
-        edadBD = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-      }
-    }
-
-    // 3️⃣ Insertar el nuevo usuario
-    const nuevoUsuario = await db.one(
-      `INSERT INTO user_data(name, last_name, birthday, address, phone, email, password)
-   VALUES($1, $2, $3, $4, $5, $6, $7)
-   RETURNING id_user, name, last_name, email`,
-      [nombre, apellido, edadBD, direccion, telefono, email, password]
+    // 3️⃣ Insertar en la tabla user
+    const insertRegister = await db.one(
+      "INSERT INTO public.user(user_name, password, email) VALUES ($1, $2, $3) RETURNING user_id",
+      [usuario, contrasena, correo]
     );
 
-    // 4️⃣ Enviar correo de bienvenida (opcional)
+    // 4️⃣ Preparar edad para la base de datos
+    let edadBD = null;
+    if (edad) {
+      const d = new Date(edad);
+      edadBD = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+    }
+
+    // 5️⃣ Insertar en la tabla user_data usando el user_id generado
+    const userData = await db.one(
+      "INSERT INTO public.user_data(id_user, name, last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id_user_data",
+      [
+        insertRegister.user_id,
+        nombre,
+        apellido,
+        edadBD,
+        direccion,
+        telefono,
+        correo
+      ]
+    );
+
+    // 6️⃣ Enviar correo de bienvenida (opcional)
     try {
-      await enviarCorreoBienvenida(email, nombre);
+      await enviarCorreoBienvenida(correo, nombre);
     } catch (err) {
       console.error('❌ Error al enviar correo:', err.message);
     }
 
-    // 5️⃣ Responder
-    res.json({ error: false, msg: 'Usuario creado con éxito', usuario: nuevoUsuario });
+    // 7️⃣ Responder al cliente
+    res.json({ error: false, msg: 'Usuario creado con éxito', usuario: userData });
   } catch (err) {
-    console.error('Error al crear usuario:', err); // <-- ahora verás la causa real
+    console.error('Error al crear usuario:', err);
     res.status(500).json({ error: true, msg: 'Error interno del servidor' });
   }
 });
+
 
 
 

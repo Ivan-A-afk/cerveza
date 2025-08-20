@@ -20,7 +20,7 @@ async function enviarCorreoBienvenida(destinatario, nombre) {
         <h2 style="color: #D2691E;">¡Hola ${nombre}!</h2>
         <p>Tu cuenta en <b>E-commerce</b> ha sido creada con éxito.</p>
         <p>Estamos emocionados de tenerte con nosotros 🍻</p>
-        <a href="https://tu-app.com/login" 
+        <a href="https://tesis-8c265.web.app/#/products" 
            style="display: inline-block; padding: 10px 20px; margin-top: 15px; background-color: #D2691E; color: white; text-decoration: none; border-radius: 5px;">
            Ir a la App
         </a>

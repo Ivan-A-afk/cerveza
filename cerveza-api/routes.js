@@ -179,11 +179,12 @@ router.get("/detalle-pedidos/:id", async (req, res) => {
 const { enviarCorreoBienvenida } = require("./mail.service");
 
 // Endpoint para registrar cliente
+// Endpoint para registrar cliente
 router.post('/registrar-cliente', async (req, res) => {
   const { nombre, apellido, email, password, telefono, direccion, edad } = req.body;
 
   // Validar campos obligatorios
-  if (!nombre || !email || !password) {
+  if (!nombre || !apellido || !email || !password || !telefono || !direccion) {
     return res.status(400).json({ error: true, msg: 'Faltan campos obligatorios' });
   }
 
@@ -194,26 +195,35 @@ router.post('/registrar-cliente', async (req, res) => {
       return res.status(400).json({ error: true, msg: 'El correo ya está registrado' });
     }
 
-    // 2️⃣ Insertar el nuevo usuario (campos opcionales se insertan si existen)
+    // 2️⃣ Preparar edad para la base de datos (si es fecha)
+    let edadBD = null;
+    if (edad) {
+      // Si es Date, convertir a formato YYYY-MM-DD
+      if (typeof edad === 'string' || edad instanceof Date) {
+        const d = new Date(edad);
+        edadBD = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+      }
+    }
+
+    // 3️⃣ Insertar el nuevo usuario
     const nuevoUsuario = await db.one(
       `INSERT INTO clientes(nombre, apellido, email, password, telefono, direccion, edad)
        VALUES($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id, nombre, apellido, email, telefono, direccion, edad`,
-      [nombre, apellido || null, email, password, telefono || null, direccion || null, edad || null]
+       RETURNING id, nombre, apellido, email`,
+      [nombre, apellido, email, password, telefono, direccion, edadBD]
     );
 
-    // 3️⃣ Enviar correo de bienvenida (opcional)
+    // 4️⃣ Enviar correo de bienvenida (opcional)
     try {
       await enviarCorreoBienvenida(email, nombre);
     } catch (err) {
       console.error('❌ Error al enviar correo:', err.message);
     }
 
-    // 4️⃣ Responder con éxito
+    // 5️⃣ Responder
     res.json({ error: false, msg: 'Usuario creado con éxito', usuario: nuevoUsuario });
-
   } catch (err) {
-    console.error(err);
+    console.error('Error al crear usuario:', err); // <-- ahora verás la causa real
     res.status(500).json({ error: true, msg: 'Error interno del servidor' });
   }
 });

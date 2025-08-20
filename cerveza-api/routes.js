@@ -207,9 +207,9 @@ router.post('/registrar-cliente', async (req, res) => {
 
     // 3️⃣ Insertar el nuevo usuario
     const nuevoUsuario = await db.one(
-      `INSERT INTO user_data(nombre, apellido, email, password, telefono, direccion, edad)
+      `INSERT INTO user_data(id_user,name,last_name, birthday, address, phone, email)
        VALUES($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id, nombre, apellido, email`,
+       RETURNING id_user, name, , email`,
       [nombre, apellido, email, password, telefono, direccion, edadBD]
     );
 

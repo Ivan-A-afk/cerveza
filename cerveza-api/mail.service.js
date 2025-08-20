@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Función para enviar correo
-export async function enviarCorreoBienvenida(destinatario, nombre) {
+async function enviarCorreoBienvenida(destinatario, nombre) {
   try {
     const info = await transporter.sendMail({
       from: '"Mi App" <bellaamayacontreras@gmail.com>',
@@ -18,11 +18,12 @@ export async function enviarCorreoBienvenida(destinatario, nombre) {
       subject: "🎉 Bienvenido a E-commerce",
       html: `<h2>Hola ${nombre},</h2>
              <p>¡Gracias por registrarte!</p>
-             <p>Estamos felices de tenerte a bordo 🚀</p>`
+             <p>Estamos felices de tenerte a bordo 🚀</p>`,
     });
-
     console.log("Correo enviado:", info.messageId);
   } catch (err) {
     console.error("Error enviando correo:", err);
   }
 }
+
+module.exports = { enviarCorreoBienvenida };

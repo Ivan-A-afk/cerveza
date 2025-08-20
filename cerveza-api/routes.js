@@ -4,7 +4,7 @@ const db = require("./pg-con-master");
 const jwt = require("jsonwebtoken");
 const mercadopago = require("mercadopago");
 const { preferences } = require("mercadopago");
-const { sendMail } = require("./mail.service");
+const { enviarCorreoBienvenida } = require("./mail.service");
 
 router.get("/products", (req, res) => {
   db.any(
@@ -176,6 +176,8 @@ router.get("/detalle-pedidos/:id", async (req, res) => {
 
 
 
+const { enviarCorreoBienvenida } = require("./mail.service");
+
 router.post("/registrar-cliente", async (req, res) => {
   try {
     const { usuario, contrasena, correo, apellido, edad, direccion, telefono } = req.body;
@@ -185,7 +187,7 @@ router.post("/registrar-cliente", async (req, res) => {
       return res.status(400).json({ error: true, msg: "Faltan campos obligatorios" });
     }
 
-    // Evitar SQL injection
+    // Evitar SQL injection y verificar si el usuario ya existe
     const userExists = await db.any(
       "SELECT true FROM public.user WHERE user_name = $1",
       [usuario]
@@ -202,7 +204,7 @@ router.post("/registrar-cliente", async (req, res) => {
     );
 
     await db.any(
-      "INSERT INTO public.user_data(id_user,name,last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      "INSERT INTO public.user_data(id_user, name, last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         insertRegister[0].user_id,
         usuario,
@@ -214,12 +216,10 @@ router.post("/registrar-cliente", async (req, res) => {
       ]
     );
 
-    // Enviar correo de bienvenida sin bloquear respuesta
-    sendMail(
-      correo,
-      "Bienvenido a Cerveza App 🍻",
-      `Hola ${usuario}, tu cuenta fue creada con éxito. ¡Salud! 🍺`
-    ).catch(err => console.error("Error enviando correo:", err));
+    // Enviar correo de bienvenida sin bloquear la respuesta
+    enviarCorreoBienvenida(correo, usuario)
+      .then(() => console.log("Correo de bienvenida enviado"))
+      .catch(err => console.error("Error enviando correo:", err));
 
     return res.status(201).json({ error: false, msg: "Usuario creado" });
 
@@ -228,6 +228,7 @@ router.post("/registrar-cliente", async (req, res) => {
     return res.status(500).json({ error: true, msg: "Error interno del servidor" });
   }
 });
+
 
 
 

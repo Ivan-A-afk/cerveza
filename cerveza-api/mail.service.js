@@ -1,12 +1,12 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.sendgrid.net",
+  host: 'smtp.sendgrid.net',
   port: 587,
   auth: {
-    user: "apikey", // literal "apikey"
-    pass: "TU_API_KEY_SENDGRID", // la API Key que creaste en SendGrid
-  },
+    user: 'apikey',
+    pass: process.env.SENDGRID_API_KEY // en vez de poner la clave directamente
+  }
 });
 
 async function enviarCorreoBienvenida(destinatario, nombreUsuario) {

@@ -180,7 +180,8 @@ const { enviarCorreoBienvenida } = require("./mail.service");
 
 // Endpoint para registrar cliente
 router.post('/registrar-cliente', async (req, res) => {
-  const { nombre, email, password } = req.body;
+  const { nombre, correo: email, password } = req.body;
+
 
   // Validar campos
   if (!nombre || !email || !password) {

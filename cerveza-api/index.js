@@ -4,6 +4,7 @@ const app = express();
 const routes = require("./routes");
 const port = process.env.PORT || 8081;
 const db = require("./pg-con-master");
+const bodyParser = require('body-parser');
 
 // 🔹 Habilitar CORS primero
 app.use(cors({
@@ -16,6 +17,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(bodyParser.json());
 
 // 🔹 Probar la conexión a la base de datos
 (async () => {

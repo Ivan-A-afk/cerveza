@@ -4,8 +4,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'outlook',
   auth: {
-    user: 'iang2538@hotmail.com',
-    pass: 'yertznobato30'
+    user: '',
+    pass: ''
   }
 });
 

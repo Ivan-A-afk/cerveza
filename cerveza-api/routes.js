@@ -190,7 +190,7 @@ router.post('/registrar-cliente', async (req, res) => {
 
   try {
     // 1️⃣ Verificar si el email ya existe
-    const existe = await db.oneOrNone('SELECT id FROM user_data WHERE email = $1', [email]);
+    const existe = await db.oneOrNone('SELECT id_user FROM user_data WHERE email = $1', [email]);
     if (existe) {
       return res.status(400).json({ error: true, msg: 'El correo ya está registrado' });
     }

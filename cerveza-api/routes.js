@@ -209,7 +209,7 @@ router.post('/registrar-cliente', async (req, res) => {
     const nuevoUsuario = await db.one(
       `INSERT INTO user_data(id_user,name,last_name, birthday, address, phone, email)
        VALUES($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id_user, name, , email`,
+       RETURNING id_user, name, last_name, email`,
       [nombre, apellido, email, password, telefono, direccion, edadBD]
     );
 

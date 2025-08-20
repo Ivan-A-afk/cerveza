@@ -237,9 +237,6 @@ router.post('/registrar-cliente', async (req, res) => {
 });
 
 
-
-
-
 router.post("/agregar-cerveza", async (req, res) => {
   const addProduct = await db.any(
     "INSERT INTO public.cervezas (nombre_producto, descripcion_producto, precio_producto, img_url, stock) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto",

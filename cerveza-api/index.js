@@ -4,6 +4,7 @@ const routes = require('./routes');
 const cors = require("cors");
 const port = process.env.PORT || 8081;
 const db = require("./pg-con-master");
+const cors = require("cors");
 
 // 🔹 Probar la conexión a la base de datos
 (async () => {
@@ -47,3 +48,10 @@ app.get("/db-test", async (req, res) => {
 app.listen(port, () => {
   console.log(`🚀 Servidor corriendo en puerto ${port}`);
 });
+
+// habilitar CORS
+app.use(cors({
+  origin: "https://tesis-8c265.web.app",  // tu frontend
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type, Authorization"
+}));

@@ -201,16 +201,16 @@ router.post('/registrar-cliente', async (req, res) => {
       // Si es Date, convertir a formato YYYY-MM-DD
       if (typeof edad === 'string' || edad instanceof Date) {
         const d = new Date(edad);
-        edadBD = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+        edadBD = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
       }
     }
 
     // 3️⃣ Insertar el nuevo usuario
     const nuevoUsuario = await db.one(
-      `INSERT INTO user_data(id_user,name,last_name, birthday, address, phone, email)
-       VALUES($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id_user, name, last_name, email`,
-      [nombre, apellido, email, password, telefono, direccion, edadBD]
+      `INSERT INTO user_data(name, last_name, birthday, address, phone, email, password)
+   VALUES($1, $2, $3, $4, $5, $6, $7)
+   RETURNING id_user, name, last_name, email`,
+      [nombre, apellido, edadBD, direccion, telefono, email, password]
     );
 
     // 4️⃣ Enviar correo de bienvenida (opcional)

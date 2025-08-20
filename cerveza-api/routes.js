@@ -182,12 +182,10 @@ router.post("/registrar-cliente", async (req, res) => {
   try {
     const { usuario, contrasena, correo, apellido, edad, direccion, telefono } = req.body;
 
-    // Validaciones básicas
     if (!usuario || !contrasena || !correo) {
       return res.status(400).json({ error: true, msg: "Faltan campos obligatorios" });
     }
 
-    // Evitar SQL injection y verificar si el usuario ya existe
     const userExists = await db.any(
       "SELECT true FROM public.user WHERE user_name = $1",
       [usuario]
@@ -197,38 +195,35 @@ router.post("/registrar-cliente", async (req, res) => {
       return res.status(409).json({ error: true, msg: "Usuario ya existe" });
     }
 
-    // Insertar usuario
     const insertRegister = await db.any(
       "INSERT INTO public.user(user_name, password, email) VALUES ($1, $2, $3) RETURNING user_id",
       [usuario, contrasena, correo]
     );
 
     await db.any(
-      "INSERT INTO public.user_data(id_user, name, last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      "INSERT INTO public.user_data(id_user,name,last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         insertRegister[0].user_id,
         usuario,
-        apellido || '',
+        apellido || "",
         edad || null,
-        direccion || '',
-        telefono || '',
+        direccion || "",
+        telefono || "",
         correo,
       ]
     );
 
-    // Enviar correo de bienvenida sin bloquear la respuesta
+    // Enviar correo de bienvenida
     enviarCorreoBienvenida(correo, usuario)
-      .then(() => console.log("Correo de bienvenida enviado"))
+      .then(() => console.log("Correo enviado a:", correo))
       .catch(err => console.error("Error enviando correo:", err));
 
     return res.status(201).json({ error: false, msg: "Usuario creado" });
-
   } catch (error) {
     console.error("Error en /registrar-cliente:", error);
     return res.status(500).json({ error: true, msg: "Error interno del servidor" });
   }
 });
-
 
 
 

@@ -1,10 +1,9 @@
 const express = require("express");
 const app = express();
-const routes = require('./routes');
+const routes = require("./routes");
 const cors = require("cors");
 const port = process.env.PORT || 8081;
 const db = require("./pg-con-master");
-const cors = require("cors");
 
 // 🔹 Probar la conexión a la base de datos
 (async () => {
@@ -19,20 +18,20 @@ const cors = require("cors");
 // Middlewares
 app.use(cors({
   origin: [
-    'http://localhost:4200', // 🔹 tu front en local
-    'https://tesis-8c265.web.app' // 🔹 tu front en Firebase
+    "http://localhost:4200",    // 🔹 front en local
+    "https://tesis-8c265.web.app" // 🔹 front en Firebase
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
 
 // Ruta raíz
-app.get("/", (req, res) => res.send('API cervezas v1'));
+app.get("/", (req, res) => res.send("API cervezas v1"));
 
 // Rutas de la API
-app.use('/api', routes);
+app.use("/api", routes);
 
 // 🔹 Endpoint para probar DB desde el navegador
 app.get("/db-test", async (req, res) => {
@@ -48,10 +47,3 @@ app.get("/db-test", async (req, res) => {
 app.listen(port, () => {
   console.log(`🚀 Servidor corriendo en puerto ${port}`);
 });
-
-// habilitar CORS
-app.use(cors({
-  origin: "https://tesis-8c265.web.app",  // tu frontend
-  methods: "GET,POST,PUT,DELETE,OPTIONS",
-  allowedHeaders: "Content-Type, Authorization"
-}));

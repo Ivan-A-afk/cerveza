@@ -9,12 +9,26 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-async function enviarCorreoBienvenida(destinatario, nombreUsuario) {
+// Función para enviar correo de bienvenida
+async function enviarCorreoBienvenida(destinatario, nombre) {
   const mailOptions = {
-    from: '"Cerveza App" <amaya.ivan333@gmail.com>', // remitente verificado
+    from: '"E-commerce App 🍺" <amaya.ivan333@gmail.com>', // debe ser un remitente verificado
     to: destinatario,
-    subject: "Bienvenido a Cerveza App 🍻",
-    html: `<p>Hola <b>${nombreUsuario}</b>, tu cuenta fue creada con éxito. ¡Salud! 🍺</p>`,
+    subject: `¡Bienvenido a E-commerce App, ${nombre}!`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
+        <h2 style="color: #D2691E;">¡Hola ${nombre}!</h2>
+        <p>Tu cuenta en <b>E-commerce</b> ha sido creada con éxito.</p>
+        <p>Estamos emocionados de tenerte con nosotros 🍻</p>
+        <a href="https://tu-app.com/login" 
+           style="display: inline-block; padding: 10px 20px; margin-top: 15px; background-color: #D2691E; color: white; text-decoration: none; border-radius: 5px;">
+           Ir a la App
+        </a>
+        <p style="margin-top: 20px; font-size: 12px; color: #888;">
+          Si no creaste esta cuenta, ignora este correo.
+        </p>
+      </div>
+    `
   };
 
   return transporter.sendMail(mailOptions);

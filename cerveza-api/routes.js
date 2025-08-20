@@ -4,6 +4,7 @@ const db = require("./pg-con-master");
 const jwt = require("jsonwebtoken");
 const mercadopago = require("mercadopago");
 const { preferences } = require("mercadopago");
+const { sendMail } = require("./mail.service");
 
 router.get("/products", (req, res) => {
   db.any(
@@ -127,8 +128,8 @@ router.get("/feedback", async (req, res) => {
   //   });
 
   // res.redirect("https://cerveza-365502.uc.r.appspot.com/#/mis-pedidos");
-     res.redirect("http://localhost:4200/#/mis-pedidos");
-    //  res.redirect("https://proyecto-tesis-9e33d.web.app/#/mis-pedidos");
+    //  res.redirect("http://localhost:4200/#/mis-pedidos");
+     res.redirect("https://tesis-8c265.web.app/#/mis-pedidos");
 });
 
 router.put("/deshabilitar-cerveza", async (req, res) => {
@@ -173,6 +174,8 @@ router.get("/detalle-pedidos/:id", async (req, res) => {
   res.send({ error: false, result: detallePedidos });
 });
 
+
+
 router.post("/registrar-cliente", async (req, res) => {
   const userExists = await db.any(
     `SELECT true FROM public.user WHERE user_name = '${req.body.usuario}'`
@@ -187,8 +190,8 @@ router.post("/registrar-cliente", async (req, res) => {
     [req.body.usuario, req.body.contrasena, req.body.correo]
   );
 
-  const userData = await db.any(
-    "INSERT INTO public.user_data(id_user,name,last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id_user_data",
+  await db.any(
+    "INSERT INTO public.user_data(id_user,name,last_name, birthday, address, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7)",
     [
       insertRegister[0].user_id,
       req.body.usuario,
@@ -199,7 +202,15 @@ router.post("/registrar-cliente", async (req, res) => {
       req.body.correo,
     ]
   );
-  res.send({ error: false, msg: 'usuario creado' });
+
+  // 🚀 Enviar correo de bienvenida
+  sendMail(
+    req.body.correo,
+    "Bienvenido a Cerveza App 🍻",
+    `Hola ${req.body.usuario}, tu cuenta fue creada con éxito. ¡Salud! 🍺`
+  );
+
+  res.send({ error: false, msg: "usuario creado" });
 });
 
 router.post("/agregar-cerveza", async (req, res) => {

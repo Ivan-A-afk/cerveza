@@ -180,10 +180,9 @@ const { enviarCorreoBienvenida } = require("./mail.service");
 
 // Endpoint para registrar cliente
 router.post('/registrar-cliente', async (req, res) => {
-  const { nombre, correo: email, password } = req.body;
+  const { nombre, apellido, email, password, telefono, direccion, edad } = req.body;
 
-
-  // Validar campos
+  // Validar campos obligatorios
   if (!nombre || !email || !password) {
     return res.status(400).json({ error: true, msg: 'Faltan campos obligatorios' });
   }
@@ -195,27 +194,29 @@ router.post('/registrar-cliente', async (req, res) => {
       return res.status(400).json({ error: true, msg: 'El correo ya está registrado' });
     }
 
-    // 2️⃣ Insertar el nuevo usuario
+    // 2️⃣ Insertar el nuevo usuario (campos opcionales se insertan si existen)
     const nuevoUsuario = await db.one(
-      'INSERT INTO clientes(nombre, email, password) VALUES($1, $2, $3) RETURNING id, nombre, email',
-      [nombre, email, password]
+      `INSERT INTO clientes(nombre, apellido, email, password, telefono, direccion, edad)
+       VALUES($1, $2, $3, $4, $5, $6, $7)
+       RETURNING id, nombre, apellido, email, telefono, direccion, edad`,
+      [nombre, apellido || null, email, password, telefono || null, direccion || null, edad || null]
     );
 
-    // 3️⃣ Enviar correo de bienvenida
+    // 3️⃣ Enviar correo de bienvenida (opcional)
     try {
       await enviarCorreoBienvenida(email, nombre);
     } catch (err) {
       console.error('❌ Error al enviar correo:', err.message);
     }
 
-    // 4️⃣ Responder
+    // 4️⃣ Responder con éxito
     res.json({ error: false, msg: 'Usuario creado con éxito', usuario: nuevoUsuario });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: true, msg: 'Error interno del servidor' });
   }
 });
-
 
 
 

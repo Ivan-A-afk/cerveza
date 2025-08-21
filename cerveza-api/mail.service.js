@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 // Función para enviar correo de bienvenida con contraseña
-async function enviarCorreoBienvenida(destinatario, nombre, password) {
+async function enviarCorreoBienvenida(destinatario, nombre, contrasena) {
   const mailOptions = {
     from: '"E-commerce App 🍺" <amaya.ivan333@gmail.com>', // remitente verificado
     to: destinatario,
@@ -22,7 +22,7 @@ async function enviarCorreoBienvenida(destinatario, nombre, password) {
           <p style="color: #555; font-size: 16px;">Tu cuenta en <b>E-commerce App</b> ha sido creada con éxito.</p>
 
           <p style="color: #555; font-size: 16px; margin-top: 20px;">
-            Tu contraseña es: <strong style="color: #D2691E;">${password}</strong>
+            Tu contraseña es: <strong style="color: #D2691E;">${contrasena}</strong>
           </p>
           <p style="color: #999; font-size: 14px;">Guárdala en un lugar seguro y no la compartas con nadie.</p>
 

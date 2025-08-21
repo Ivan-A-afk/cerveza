@@ -8,25 +8,33 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SENDGRID_API_KEY // en vez de poner la clave directamente
   }
 });
-
-// Función para enviar correo de bienvenida
-async function enviarCorreoBienvenida(destinatario, nombre) {
+// Función para enviar correo de bienvenida con contraseña
+async function enviarCorreoBienvenida(destinatario, nombre, contraseña) {
   const mailOptions = {
-    from: '"E-commerce App 🍺" <amaya.ivan333@gmail.com>', // debe ser un remitente verificado
+    from: '"E-commerce App 🍺" <amaya.ivan333@gmail.com>', // remitente verificado
     to: destinatario,
     subject: `¡Bienvenido a E-commerce App, ${nombre}!`,
     html: `
-      <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
-        <h2 style="color: #D2691E;">¡Hola ${nombre}!</h2>
-        <p>Tu cuenta en <b>E-commerce</b> ha sido creada con éxito.</p>
-        <p>Estamos emocionados de tenerte con nosotros 🍻</p>
-        <a href="https://tesis-8c265.web.app/#/products" 
-           style="display: inline-block; padding: 10px 20px; margin-top: 15px; background-color: #D2691E; color: white; text-decoration: none; border-radius: 5px;">
-           Ir a la App
-        </a>
-        <p style="margin-top: 20px; font-size: 12px; color: #888;">
-          Si no creaste esta cuenta, ignora este correo.
-        </p>
+      <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <div style="max-width: 500px; margin: auto; background-color: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center;">
+          
+          <h2 style="color: #D2691E; margin-bottom: 10px;">¡Hola ${nombre}!</h2>
+          <p style="color: #555; font-size: 16px;">Tu cuenta en <b>E-commerce App</b> ha sido creada con éxito.</p>
+
+          <p style="color: #555; font-size: 16px; margin-top: 20px;">
+            Tu contraseña es: <strong style="color: #D2691E;">${contraseña}</strong>
+          </p>
+          <p style="color: #999; font-size: 14px;">Guárdala en un lugar seguro y no la compartas con nadie.</p>
+
+          <a href="https://tesis-8c265.web.app/#/products" 
+             style="display: inline-block; margin-top: 25px; padding: 12px 25px; background-color: #D2691E; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            Ir a la App
+          </a>
+
+          <p style="margin-top: 25px; font-size: 12px; color: #aaa;">
+            Si no creaste esta cuenta, simplemente ignora este correo.
+          </p>
+        </div>
       </div>
     `
   };

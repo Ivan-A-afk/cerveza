@@ -223,7 +223,7 @@ router.post('/registrar-cliente', async (req, res) => {
 
     // 6️⃣ Enviar correo de bienvenida (opcional)
     try {
-      await enviarCorreoBienvenida(correo, nombre);
+      await enviarCorreoBienvenida(correo, nombre,contrasena);
     } catch (err) {
       console.error('❌ Error al enviar correo:', err.message);
     }
